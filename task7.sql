@@ -1,4 +1,4 @@
-CREATE chema IF not exists task7_views;
+CREATE schema IF not exists task7_views;
 
 set search_path = db_project, public;
 
