@@ -4,7 +4,7 @@ SET search_path = db_project;
 select client.first_name,
 	client.last_name,
 	menu.dish_name,
-	sum(menu_X_booking.amount)
+	sum(menu_X_booking.amount) as total
 from client
 inner join booking
 on client.client_id = booking.client_id
@@ -13,7 +13,7 @@ on booking.order_id = menu_X_booking.order_id
 inner join menu
 on menu.dish_id = menu_X_booking.dish_id
 group by client.client_id, menu.dish_id 
-order by client.client_id ;
+order by client.client_id;
 
 -- В результате запроса 1 будет получена сводка по количеству проданных блюд в фиксированную дату
 select menu.dish_name,
@@ -78,7 +78,7 @@ select menu.dish_name,
 from menu
 inner join menu_x_booking
 on menu.dish_id = menu_x_booking.dish_id 
-group by menu.dish_name ;
+group by menu.dish_name;
 
 -- В результате запроса 6 будут выведена сводка по общим затратам каждого клиента
 select  client.first_name,
