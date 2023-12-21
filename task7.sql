@@ -44,12 +44,13 @@ create or replace view employees_view as
 	select substr(employees.first_name, 1, 4) || regexp_replace(substr(employees.first_name, length(employees.first_name) - 4), '\w', '*', 'g') as "Имя сотрудника",
 	substr(employees.last_name, 1, 4) || regexp_replace(substr(employees.last_name, length(employees.last_name) - 4), '\w', '*', 'g') as "Фамилия сотрудника",
 	periods.post as "Должность сотрудника",
-	periods.salary as "Зарплата сотрудника"
+	periods.salary as "Зарплата сотрудника",
+	periods.valid_from as "Начало работы на должности",
+	periods.valid_to as "Конец работы на должности"
 from
 	db_project.employees
 	inner join db_project.periods
-	on employees.emp_id = periods.emp_id
-	where now()::date between periods.valid_to and periods.valid_from;
+	on employees.emp_id = periods.emp_id;
 	
 select * from employees_view;
 	
@@ -64,7 +65,7 @@ from db_project.booking
 inner join db_project.client
 on booking.client_id = client.client_id
 inner join db_project.room
-on booking.room_id = room.room_id
+on booking.room_id = room.room_id;
 
 select * from booking_view;
 
@@ -96,3 +97,4 @@ on menu_x_booking.dish_id = menu.dish_id
 group by client.client_id, menu.dish_id, booking.order_id;
 
 select * from menu_x_booking_view;
+	
