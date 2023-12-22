@@ -50,7 +50,7 @@ select employees.first_name,
 	sum(extract(epoch from service_x_booking.end_time - service_x_booking.start_time) / 3600.00)  over (partition by employees.emp_id order by service_x_booking.start_time) as cumulative_hours
 from employees
 inner join service_x_booking
-on employees.emp_id = service_x_booking.emp_id 
+on employees.emp_id = service_x_booking.emp_id;
 
 -- В результате запроса 4 будет получен список актуальных на какой-то конкретный период должностей и зарплат по работникам
 select employees.first_name,
