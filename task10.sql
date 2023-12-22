@@ -47,10 +47,4 @@ as $$
 	end;
 	$$ language plpgsql;
 	
---delete from booking where client_id in (1, 2, 3, 4, 5, 6);
---call make_order(10, '2020-12-22 00:00:00', '2020-12-22 10:00:00', 3);
---select distinct booking.room_id 
-	--			from booking 
-		--		where booking.start_time between '2020-12-22 00:00:00' and '2020-12-22 10:00:00' or booking.end_time between '2020-12-22 00:00:00' and '2020-12-22 10:00:00' and booking.room_id = 2;
-
---select room_id from room;
+call make_order(10, '2020-12-22 00:00:00', '2020-12-22 10:00:00', 3);
