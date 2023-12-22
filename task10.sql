@@ -1,6 +1,35 @@
 set search_path = db_project, public;
 
-drop procedure if exists make_order;
+--drop procedure if exists make_discount;
+create or replace procedure  make_discount(total_sum int, discount_start timestamp, discount_end timestamp) as 
+$$
+	declare 
+		o_id int;
+		d_id int;
+	begin
+		for o_id in (select order_id from booking where booking.end_time between discount_start and discount_end)
+		loop 
+			if (select sum(menu_X_booking.amount * menu.price) 
+				from menu_X_booking
+				inner join menu
+				on menu_X_booking.dish_id = menu.dish_id
+				where menu_X_booking.order_id = o_id
+				group by menu_X_booking.order_id) > total_sum then 
+					for d_id in (select menu_X_booking.dish_id from menu_X_booking where menu_X_booking.order_id = o_id)
+					loop 
+						execute('update menu_X_booking set amount = greatest(amount - 1, 0) where order_id = $1 and dish_id = $2') using o_id, d_id; 
+					end loop;
+			end if;
+		end loop;
+	end
+$$ language plpgsql;
+--31-го декабря есть заказ, в котором у блюд с номерами 1, 5, 6 количества 1, 3, 2 соответственно
+--Ожидается, что станет 0, 2, 1
+call make_discount(1000, '2023-12-31 00:00:00', '2023-12-31 10:00:00');
+--Проверим, что если скидка от заказа на 100 т.р., то ничего не изменится
+call make_discount(100000, '2023-12-31 00:00:00', '2023-12-31 10:00:00');
+
+--drop procedure if exists make_order;
 create or replace procedure make_order(client_id int, new_start_time timestamp, new_end_time timestamp, service_id int) 
 as $$
 	declare 
